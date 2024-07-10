@@ -1,0 +1,67 @@
+# Requires auth to browse root directory, but allows serving any files using their URL if known
+# Logs to /var/log/caddy/access.log on the host machine
+# Exposes port 7432
+
+{
+    # Global options
+    auto_https off
+    admin off
+}
+
+:7432 {
+    root * /srv
+    encode gzip zstd
+
+    # Serve files directly without authentication
+    @direct_file {
+        file
+        not path /
+    }
+    handle @direct_file {
+        file_server
+    }
+
+    # Require authentication for directory listing
+    handle {
+        basicauth {
+            {$BROWSE_USERNAME} {$BROWSE_PASSWORD_HASH}
+        }
+        file_server {
+            browse
+        }
+    }
+
+    # Cache static assets
+    header Cache-Control "public, max-age=31536000"
+
+    # CORS configuration
+    header Access-Control-Allow-Origin "*"
+    header Access-Control-Allow-Methods "GET, OPTIONS"
+    header Access-Control-Allow-Headers "Origin, Content-Type, Accept"
+
+    # Security headers
+    header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    header X-Content-Type-Options "nosniff"
+    header X-Frame-Options "DENY"
+    header Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Optimize file serving
+    @static {
+        file
+        path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2
+    }
+    handle @static {
+        header Cache-Control "public, max-age=31536000, immutable"
+    }
+
+    # Prevent serving hidden files
+    @hidden {
+        path */.*
+    }
+    respond @hidden 404
+
+    log {
+        output file /var/log/caddy/access.log
+        format json
+    }
+}
