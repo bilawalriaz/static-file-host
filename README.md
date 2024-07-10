@@ -3,8 +3,13 @@
 
 This project sets up a lightweight static file hosting solution using Docker and Caddy. It provides a secure way to host and serve static files with features like file browsing (password protected) and direct file access.
 
+It's very simple. You drop files in a folder on your machine and they're accessible online (once you expose the port).
+
 ![This is hosted using Static File Host!](https://cdn.hyperflash.uk/staticfilehostscreenshot.png)
 *This screenshot itself is hosted using Static File Host!*
+
+Example hosted video: https://cdn.hyperflash.uk/GCfkKS.mp4
+Example hosted image: https://cdn.hyperflash.uk/y56T6L.jpeg
 ## Features
 
 - Lightweight and fast static file serving
@@ -48,12 +53,19 @@ This project sets up a lightweight static file hosting solution using Docker and
    Replace `your_username` and `your_password` with your desired credentials for directory browsing. ***It is recommended to change this or else anyone can browse the contents of the CDN from the root page.***
 
 4. Access your files:
-   - Drop any files into your CDN directory (e.g /cdn)
+   - Drop any files into your CDN directory (e.g /cdn) using Filezilla/WinSCP/Cyberduck/SFTP/FTP/whatever
    - File browsing: `http://localhost:7432` (requires authentication)
    - Direct file access: `http://localhost:7432/your-file.jpg` (no authentication required)
    - Use Cloudflare Tunnel to expose HTTP localhost on port 7432 with your desired domain
 
 ![Cloudflare Tunnel](https://cdn.hyperflash.uk/cftunnelstaticfilehost.png)
+
+### Considerations
+Make your filenames relatively unique or else people may be able to guess their URLs - you shouldn't be hosting sensitive information like this anyway, but hey, you can do whatever the fuck you like ;)
+
+## Future features?
+- A way to easily explore access logs
+- A portal to upload files through
 
 ## Configuration
 
